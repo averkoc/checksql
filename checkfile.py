@@ -69,13 +69,8 @@ class SQLFileChecker:
 
     def postgist(self,filename):
         """
-        HTTP Reuests has following parameters:
-        1)Request URL
-        2)Header Fields
-        3)Parameter
-        4)Request body
+        Note: Keep API-TOKEN in configs.json and don't add configs.json to version control - should be secret!
         """
-        # !/usr/bin/env python
 
 
         # The default-value  is ANSI and the caused a lot of confusion for me before I noticed it.
@@ -92,24 +87,14 @@ class SQLFileChecker:
         with open(filename, encoding='utf-8') as myFile:
             text = myFile.read()
 
-        # form a request URL
-
         print("Request URL: %s" % url)
 
-        # print headers,parameters,payload
         headers = {'Authorization': 'token %s' % API_TOKEN, 'Content-Type': 'text/html'}
         params = {'scope': 'gist'}
-        # payload={"description":"SM SQL Review","public":False,"files":{"Matti1.sql":{"content":"Python requests has 3 parameters: 1)Request URL\n 2)Header Fields\n 3)Parameter \n4)Request body"}}}
+
         payload = {"description": self.email, "public": False,
                    "files": {"Review.sql": {"content": text}}}
 
         res = requests.post(url, headers=headers, params=params, data=json.dumps(payload))
-
-        # print response --> JSON
-        print(res.status_code)
-        # print(res.url)
-        # print(res.text)
         j = json.loads(res.text)
-        print(j['html_url'])
-
         return j['html_url']
